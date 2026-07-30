@@ -1,22 +1,19 @@
 /**
- * 窗口拖动工具 - 通过 JS 调用后端 API 实现窗口拖动
- * 不依赖 CSS 的 app-region: drag，避免右键弹出系统菜单的问题
+ * 窗口拖动工具 - 通过 JS 调用后端 API 实现窗口拖动.
+ * 不依赖 CSS 的 app-region: drag，避免右键弹出系统菜单的问题.
+ * 内部使用了 api.moveWindow 来移动窗口, 需在 Go 后端绑定.
  */
-
-type SetPosFn = (x: number, y: number) => void
 
 class WindowDrag {
   /**
    * 为指定元素启用窗口拖动功能
    * @param element - 要启用拖动的元素或选择器
    * @param exclude - 要排除的元素或选择器（点击时不触发拖动）
-   * @param setPosition - 设置窗口位置的函数 (x, y) => void，默认使用 wnd.setPos
    * @returns 取消绑定函数
    */
   static enable(
     element: string | HTMLElement,
-    exclude?: string | HTMLElement | Array<string | HTMLElement>,
-    setPosition?: SetPosFn
+    exclude?: string | HTMLElement | Array<string | HTMLElement>
   ): () => void {
     const targetEl = typeof element === 'string'
       ? document.querySelector(element) as HTMLElement
@@ -27,13 +24,9 @@ class WindowDrag {
       return () => {}
     }
 
-    // 确定设置位置的函数
-    const moveFn: SetPosFn = typeof setPosition === 'function'
-      ? setPosition
-      : (x, y) => {
-          const wnd = (window as unknown as Record<string, { setPos?: SetPosFn }>)['wnd']
-          wnd?.setPos?.(Math.round(x), Math.round(y))
-        }
+    const moveFn = (x: number, y: number) => {
+      window?.api?.moveWindow(Math.round(x), Math.round(y))
+    }
 
     // 处理排除列表：区分 CSS 选择器（动态匹配）和 HTMLElement（静态引用）
     const staticEls: HTMLElement[] = []
