@@ -159,3 +159,13 @@ html, body {
   flex-direction: column;
   position: relative;
 }
+
+/* 最大化时：去除圆角、阴影、padding */
+body.window-maximized #shadow-container {
+  padding: 0;
+}
+
+body.window-maximized #content {
+  border-radius: 0;
+  box-shadow: none;
+}

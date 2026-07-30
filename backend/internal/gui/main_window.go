@@ -32,8 +32,8 @@ type MainWindow struct {
 func NewMainWindow(edg *edge.Edge) *MainWindow {
 	m := &MainWindow{
 		edg:        edg,
-		origWidth:  1200,
-		origHeight: 900,
+		origWidth:  900,
+		origHeight: 700,
 		lastPos:    xc.POINT{X: -999, Y: -999},
 	}
 
@@ -144,16 +144,19 @@ func (m *MainWindow) regWebViewEvents() {
 // bindFunctions 绑定函数
 func (m *MainWindow) bindFunctions() {
 	// ===== 窗口控制 =====
-	m.wv.Bind("api.minimizeWindow", func() {
+	m.wv.Bind("api.minimizeWindow", func() { // 最小化窗口
 		m.w.ShowWindow(xcc.SW_MINIMIZE)
 	})
 
-	m.wv.Bind("api.closeWindow", func() {
+	m.wv.Bind("api.toggleWindowMaximize", func() { // 切换窗口最大化
+		m.w.MaxWindow(!m.w.IsMaxWindow())
+	})
+
+	m.wv.Bind("api.closeWindow", func() { // 关闭窗口
 		m.w.CloseWindow()
 	})
 
-	// 移动窗口（供 JS WindowDrag 调用）
-	m.wv.Bind("api.moveWindow", func(x, y int32) {
+	m.wv.Bind("api.moveWindow", func(x, y int32) { // 移动窗口（供 JS WindowDrag 调用）
 		m.w.SetPosition(m.w.DpiConv(x), m.w.DpiConv(y))
 	})
 
@@ -162,7 +165,7 @@ func (m *MainWindow) bindFunctions() {
 		m.frontendReady()
 	})
 
-	m.wv.Bind("api.getVersion", func() string {
+	m.wv.Bind("api.getVersion", func() string { // 获取版本号
 		return g.Version
 	})
 }

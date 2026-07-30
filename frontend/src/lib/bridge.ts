@@ -5,6 +5,7 @@ declare global {
     api: {
       // 窗口控制
       minimizeWindow: () => Promise<void>
+      toggleWindowMaximize: () => Promise<void>
       closeWindow: () => Promise<void>
       moveWindow: (x: number, y: number) => Promise<void>
       // 系统
@@ -38,6 +39,7 @@ async function callApi<T>(method: string, ...args: unknown[]): Promise<T | null>
 
 export const bridge = {
   minimizeWindow: () => callApi<void>("minimizeWindow"),
+  toggleWindowMaximize: () => callApi<void>("toggleWindowMaximize"),
   closeWindow: () => callApi<void>("closeWindow"),
   moveWindow: (x: number, y: number) => callApi<void>("moveWindow", x, y),
   getVersion: () => callApi<string>("getVersion"),

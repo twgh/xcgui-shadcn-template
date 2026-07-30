@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,6 +8,8 @@ import WindowDrag from "@/lib/window-drag"
 import {
   MinusIcon,
   XIcon,
+  Maximize2Icon,
+  Minimize2Icon,
   MonitorIcon,
   WrenchIcon,
   LayersIcon,
@@ -27,6 +29,7 @@ const features = [
 
 export function App() {
   const [version, setVersion] = useState("")
+  const [isMaximized, setIsMaximized] = useState(false)
 
   useEffect(() => {
     // 启用窗口拖动（排除按钮、输入框等交互元素）
@@ -44,6 +47,23 @@ export function App() {
     bridge.frontendReady()
 
     return cleanup
+  }, [])
+
+  // 切换最大化时同步 body class
+  useEffect(() => {
+    if (isMaximized) {
+      document.body.classList.add("window-maximized")
+    } else {
+      document.body.classList.remove("window-maximized")
+    }
+    return () => {
+      document.body.classList.remove("window-maximized")
+    }
+  }, [isMaximized])
+
+  const handleToggleMaximize = useCallback(() => {
+    setIsMaximized((prev) => !prev)
+    bridge.toggleWindowMaximize()
   }, [])
 
   return (
@@ -65,6 +85,18 @@ export function App() {
               <Button
                 variant="ghost"
                 size="icon"
+                className="size-8 rounded-none"
+                onClick={handleToggleMaximize}
+              >
+                {isMaximized ? (
+                  <Minimize2Icon data-icon="inline-start" />
+                ) : (
+                  <Maximize2Icon data-icon="inline-start" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 className="size-8 rounded-none hover:bg-destructive hover:text-destructive-foreground"
                 onClick={() => bridge.closeWindow()}
               >
@@ -74,8 +106,8 @@ export function App() {
           </div>
 
           {/* 主内容 */}
-          <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto p-6">
-            <div className="flex w-full max-w-lg flex-col gap-6 py-4">
+          <div className="flex flex-1 flex-col items-center justify-center p-6">
+            <div className="flex w-full flex-col gap-6">
               {/* 欢迎区域 */}
               <div className="text-center">
                 <h1 className="font-heading text-2xl font-semibold">
@@ -102,7 +134,7 @@ export function App() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[
                       { label: "后端", value: "Go + XCGUI", sub: "WebView2" },
                       { label: "前端", value: "React 19", sub: "TypeScript + Vite" },
@@ -135,7 +167,7 @@ export function App() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {features.map(({ icon: Icon, title, desc }) => (
                       <div key={title} className="flex items-start gap-3">
                         <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
