@@ -144,26 +144,24 @@ func (m *MainWindow) regWebViewEvents() {
 // bindFunctions 绑定函数
 func (m *MainWindow) bindFunctions() {
 	// ===== 窗口控制 =====
-	m.wv.Bind("wnd.minimize", func() {
+	m.wv.Bind("api.minimizeWindow", func() {
 		m.w.ShowWindow(xcc.SW_MINIMIZE)
 	})
 
-	m.wv.Bind("wnd.close", func() {
+	m.wv.Bind("api.closeWindow", func() {
 		m.w.CloseWindow()
 	})
 
-	// 设置窗口位置（供 JS WindowDrag 调用）
-	m.wv.Bind("wnd.setPos", func(x, y int32) {
+	// 移动窗口（供 JS WindowDrag 调用）
+	m.wv.Bind("api.moveWindow", func(x, y int32) {
 		m.w.SetPosition(m.w.DpiConv(x), m.w.DpiConv(y))
 	})
 
-	// ===== 其它 =====
-
-	m.wv.Bind("api.frontendReady", func() {
+	// ===== 系统 =====
+	m.wv.Bind("api.frontendReady", func() { // 前端准备就绪
 		m.frontendReady()
 	})
 
-	// ===== 系统信息 =====
 	m.wv.Bind("api.getVersion", func() string {
 		return g.Version
 	})
