@@ -26,3 +26,4 @@ dist/*
 # File
 go.work
 *.syso
+scripts/archive.bat
