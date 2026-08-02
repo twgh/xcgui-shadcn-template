@@ -140,10 +140,13 @@ html, body {
 }
 
 /* 关键2：shadow-container 绝对定位填满视口，padding 留出阴影空间 */
+/* 阴影为 0 2px 12px，模糊半径 12px。padding 需 ≥ 阴影模糊半径（12px）+
+   偏移量（2px）+ 模糊尾部余量，才能保证阴影四角不被 overflow:hidden 裁剪。
+   四角方向水平与垂直模糊叠加，需要约 1.5×blur ≈ 18px，故取 18px。 */
 #shadow-container {
   position: absolute;
   inset: 0;
-  padding: 12px;
+  padding: 18px;
   box-sizing: border-box;
   overflow: hidden;
 }
