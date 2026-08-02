@@ -8,8 +8,8 @@ import WindowDrag from "@/lib/window-drag"
 import {
   MinusIcon,
   XIcon,
-  Maximize2Icon,
-  Minimize2Icon,
+  SquareIcon,
+  CopyIcon,
   MonitorIcon,
   WrenchIcon,
   LayersIcon,
@@ -89,9 +89,9 @@ export function App() {
                 onClick={handleToggleMaximize}
               >
                 {isMaximized ? (
-                  <Minimize2Icon data-icon="inline-start" />
+                  <CopyIcon data-icon="inline-start" className="size-3.5" />
                 ) : (
-                  <Maximize2Icon data-icon="inline-start" />
+                  <SquareIcon data-icon="inline-start" className="size-3.5" />
                 )}
               </Button>
               <Button
