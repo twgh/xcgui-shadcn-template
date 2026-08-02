@@ -58,7 +58,32 @@ func NewMainWindow(edg *edge.Edge) *MainWindow {
 
 	// 设置为透明窗口
 	m.w.SetTransparentType(xcc.Window_Transparent_Shaped)
+	// 设置图标
+	m.setIcon()
 
+	// 注册炫彩事件
+	m.regXcEvents()
+
+	// 正式版嵌入文件, 调试版使用 dev server
+	if !g.IsDebug() {
+		m.setupEmbedFS()
+	} else {
+		m.setupDevServer()
+	}
+
+	// 节省 WebView 内存
+	m.saveMemory()
+	// 注册 WebView 事件
+	m.regWebViewEvents()
+	// 绑定函数
+	m.bindFunctions()
+	// 加载首页
+	m.wv.Navigate(m.getHost() + "/index.html")
+	return m
+}
+
+// setIcon 设置图标
+func (m *MainWindow) setIcon() {
 	// 从资源中加载程序图标
 	hMod := wapi.GetModuleHandleW("")
 	hIconApp := wapi.LoadImageW(hMod, common.StrPtr("APPICON"), wapi.IMAGE_ICON, 0, 0, wapi.LR_SHARED|wapi.LR_DEFAULTSIZE)
@@ -73,23 +98,6 @@ func NewMainWindow(edg *edge.Edge) *MainWindow {
 	m.tray = m.w.CreateTrayIcon(hIconApp, g.AppName)
 	// 显示托盘图标
 	m.tray.Show()
-
-	// 注册炫彩事件
-	m.regXcEvents()
-
-	if !g.IsDebug() {
-		m.setupEmbedFS()
-	} else {
-		m.setupDevServer()
-	}
-
-	// 节省 WebView 内存
-	m.saveMemory()
-
-	m.regWebViewEvents()
-	m.bindFunctions()
-	m.wv.Navigate(m.getHost() + "/index.html")
-	return m
 }
 
 // regXcEvents 注册炫彩事件
