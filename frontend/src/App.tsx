@@ -89,9 +89,9 @@ export function App() {
                 onClick={handleToggleMaximize}
               >
                 {isMaximized ? (
-                  <CopyIcon data-icon="inline-start" className="size-3.5" />
+                  <CopyIcon data-icon="inline-start" className="size-3" />
                 ) : (
-                  <SquareIcon data-icon="inline-start" className="size-3.5" />
+                  <SquareIcon data-icon="inline-start" className="size-3" />
                 )}
               </Button>
               <Button
