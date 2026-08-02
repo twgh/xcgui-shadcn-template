@@ -16,7 +16,6 @@
 │   │   ├── index.css            # css样式
 │   │   ├── lib/bridge.ts        # Go <-> JS 通信桥接
 │   │   └── components/ui/       # shadcn 组件
-│   ├── README.md                # 前端开发说明
 │   └── package.json
 ├── backend/           # Go 后端
 │   ├── main.go                  # 程序入口
@@ -80,6 +79,42 @@ build_all.bat
 
 编译后得到单个exe，内嵌了所有前端资源。
 
-## 界面展示
+---
 
-![主界面](https://s41.ax1x.com/2026/07/14/pmye3gU.png)
+## 前端开发
+
+### 添加组件
+
+要在应用中添加组件，请运行以下命令：
+
+```bash
+cd frontend
+
+# 使用固定版本
+npx shadcn@4.16.0 add button
+
+# 使用最新版本
+npx shadcn@latest add button
+```
+
+这会将 UI 组件放置在 `frontend/src/components` 目录下。
+
+### 使用组件
+
+要在应用中使用这些组件，可以按如下方式进行导入：
+
+```tsx
+import { Button } from "@/components/ui/button"
+```
+
+### 更新组件
+
+```bash
+cd frontend
+
+# 更新单个组件
+npx shadcn@latest add button --overwrite
+
+# 批量更新所有已安装组件
+npx shadcn@latest add --all --overwrite
+```
