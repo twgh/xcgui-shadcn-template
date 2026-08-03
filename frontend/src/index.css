@@ -157,6 +157,10 @@ html, body {
   background: var(--background);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  /* 窗口边缘边框（参照 RoundedShadowWindow 例子） */
+  border: 1.5px solid var(--border);
+  /* 让边框算进 100% 尺寸内，避免边框把元素撑得比容器内容区更大 */
+  box-sizing: border-box;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -171,6 +175,7 @@ body.window-maximized #shadow-container {
 body.window-maximized #content {
   border-radius: 0;
   box-shadow: none;
+  border: none;
 }
 
 /* ===== 标题栏拖动 ===== */
