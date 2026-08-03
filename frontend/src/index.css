@@ -172,3 +172,106 @@ body.window-maximized #content {
   border-radius: 0;
   box-shadow: none;
 }
+
+/* ===== 标题栏拖动 ===== */
+
+/* 标题栏：使用 app-region: drag 让操作系统处理窗口拖动（成为非客户区） */
+.titlebar {
+  app-region: drag;
+}
+
+/* 控制按钮区域：不可拖动 */
+.titlebar-controls {
+  app-region: no-drag;
+}
+
+/* ===== 窗口边框调整热区 ===== */
+
+/*
+  透明窗口没有系统边框可拖拽，因此在边框区域添加透明热区，
+  用 JS 调用后端 API 调整窗口大小。
+  所有热区往边框外的阴影区域延伸了 6px，边框内也是 6px，共 12px。
+  热区放在 #shadow-container 内、#content 外，避免被 content 的 overflow:hidden 裁剪。
+*/
+.resize-edge {
+  position: absolute;
+  background: transparent;
+  z-index: 10000; /* 确保热区在最上层 */
+}
+
+/* 上边缘 */
+.resize-edge.top {
+  top: 6px;
+  left: 12px;
+  right: 12px;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+/* 右边缘 */
+.resize-edge.right {
+  top: 12px;
+  right: 6px;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+/* 下边缘 */
+.resize-edge.bottom {
+  bottom: 6px;
+  left: 12px;
+  right: 12px;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+/* 左边缘 */
+.resize-edge.left {
+  top: 12px;
+  left: 6px;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+/* 右上角 */
+.resize-edge.top-right {
+  top: 6px;
+  right: 6px;
+  width: 12px;
+  height: 12px;
+  cursor: nesw-resize;
+}
+
+/* 右下角 */
+.resize-edge.bottom-right {
+  bottom: 6px;
+  right: 6px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+}
+
+/* 左下角 */
+.resize-edge.bottom-left {
+  bottom: 6px;
+  left: 6px;
+  width: 12px;
+  height: 12px;
+  cursor: nesw-resize;
+}
+
+/* 左上角 */
+.resize-edge.top-left {
+  top: 6px;
+  left: 6px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+}
+
+/* 最大化状态下隐藏所有边框拖拽的热区 */
+body.window-maximized .resize-edge {
+  display: none;
+}

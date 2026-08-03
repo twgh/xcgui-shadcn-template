@@ -8,6 +8,8 @@ declare global {
       toggleWindowMaximize: () => Promise<void>
       closeWindow: () => Promise<void>
       moveWindow: (x: number, y: number) => Promise<void>
+      setWindowSize: (width: number, height: number) => Promise<void>
+      getWindowRect: () => Promise<{ Left: number; Top: number; Right: number; Bottom: number }>
       // 系统
       getVersion: () => Promise<string>
       frontendReady: () => Promise<void>
@@ -42,6 +44,10 @@ export const bridge = {
   toggleWindowMaximize: () => callApi<void>("toggleWindowMaximize"),
   closeWindow: () => callApi<void>("closeWindow"),
   moveWindow: (x: number, y: number) => callApi<void>("moveWindow", x, y),
+  setWindowSize: (width: number, height: number) =>
+    callApi<void>("setWindowSize", width, height),
+  getWindowRect: () =>
+    callApi<{ Left: number; Top: number; Right: number; Bottom: number }>("getWindowRect"),
   getVersion: () => callApi<string>("getVersion"),
   frontendReady: () => callApi<void>("frontendReady"),
 }

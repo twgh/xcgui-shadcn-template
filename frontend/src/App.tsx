@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { bridge } from "@/lib/bridge"
 import WindowDrag from "@/lib/window-drag"
+import WindowResize from "@/lib/window-resize"
 import {
   MinusIcon,
   XIcon,
@@ -33,10 +34,13 @@ export function App() {
 
   useEffect(() => {
     // 启用窗口拖动（排除按钮、输入框等交互元素）
-    const cleanup = WindowDrag.enable(
+    const cleanupDrag = WindowDrag.enable(
       "#app-content",
-      "button, a, input, select, textarea"
+      ".titlebar, button, a, input, select, textarea"
     )
+
+    // 启用窗口边框拖动调整大小
+    const cleanupResize = WindowResize.enable(400)
 
     // 获取版本号
     bridge.getVersion().then((v) => {
@@ -46,7 +50,10 @@ export function App() {
     // 通知后端前端已就绪
     bridge.frontendReady()
 
-    return cleanup
+    return () => {
+      cleanupDrag()
+      cleanupResize()
+    }
   }, [])
 
   // 切换最大化时同步 body class
@@ -68,10 +75,20 @@ export function App() {
 
   return (
     <div id="shadow-container">
+      {/* 边框调整热区 - 放在 content 外面，避免被 overflow:hidden 裁剪 */}
+      <div className="resize-edge top" data-edge="top" />
+      <div className="resize-edge right" data-edge="right" />
+      <div className="resize-edge bottom" data-edge="bottom" />
+      <div className="resize-edge left" data-edge="left" />
+      <div className="resize-edge top-right" data-corner="top-right" />
+      <div className="resize-edge bottom-right" data-corner="bottom-right" />
+      <div className="resize-edge bottom-left" data-corner="bottom-left" />
+      <div className="resize-edge top-left" data-corner="top-left" />
+
       <div id="content">
         <div id="app-content" className="flex flex-1 flex-col min-h-0 select-none">
           {/* 标题栏 */}
-          <div className="flex h-9 shrink-0 items-center justify-between border-b bg-muted/30 px-2">
+          <div className="titlebar flex h-9 shrink-0 items-center justify-between border-b bg-muted/30 px-2">
             <span className="px-2 text-xs text-muted-foreground">xcgui-shadcn-ui</span>
             <div className="titlebar-controls flex items-center">
               <Button
