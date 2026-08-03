@@ -58,6 +58,12 @@ class WindowDrag {
     let isDragging = false
     let offsetX = 0
     let offsetY = 0
+    let pressStartX = 0 // 按下时鼠标位置（仅用于最大化还原的阈值判断）
+    let pressStartY = 0
+    let restorePending = false // 按下时窗口已最大化, 等待超过阈值拖动时才还原
+
+    // 从最大化还原为非最大化所需的位移阈值(px), 避免轻微移动就还原
+    const dragThreshold = 6
 
     // 添加 user-select: none 防止拖动时选中文本
     targetEl.style.userSelect = 'none'
@@ -69,10 +75,32 @@ class WindowDrag {
       isDragging = true
       offsetX = e.clientX
       offsetY = e.clientY
+      pressStartX = e.screenX
+      pressStartY = e.screenY
+      restorePending = false
+
+      // 记录按下时窗口是否已最大化, 但先不还原, 等到超过阈值开始拖动时才还原
+      window?.api?.IsMaxWindow().then((maximized) => {
+        if (isDragging && maximized) {
+          restorePending = true
+        }
+      })
     }
 
-    const onMouseMove = (e: MouseEvent) => {
+    const onMouseMove = async (e: MouseEvent) => {
       if (!isDragging) return
+
+      // 仅在"按下时窗口已最大化"的场景需要阈值: 移动超过阈值才还原并开始拖动.
+      // 普通情况下移动窗口无需阈值, 按下即可即时拖动.
+      if (restorePending) {
+        const dx = Math.abs(e.screenX - pressStartX)
+        const dy = Math.abs(e.screenY - pressStartY)
+        if (dx < dragThreshold && dy < dragThreshold) return
+
+        // 超过阈值, 还原为非最大化, 让窗口跟随鼠标
+        restorePending = false
+        await window?.api?.toggleWindowMaximize()
+      }
 
       const newX = e.screenX - offsetX
       const newY = e.screenY - offsetY
@@ -81,6 +109,7 @@ class WindowDrag {
 
     const onMouseUp = () => {
       isDragging = false
+      restorePending = false
     }
 
     targetEl.addEventListener('mousedown', onMouseDown)
