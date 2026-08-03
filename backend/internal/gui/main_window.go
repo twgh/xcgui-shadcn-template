@@ -187,7 +187,7 @@ func (m *MainWindow) bindFunctions() {
 		m.w.MaxWindow(!m.w.IsMaxWindow())
 	})
 	// 窗口是否最大化
-	m.wv.Bind("api.IsMaxWindow", func() bool {
+	m.wv.Bind("api.isMaxWindow", func() bool {
 		return m.w.IsMaxWindow()
 	})
 	// 关闭窗口

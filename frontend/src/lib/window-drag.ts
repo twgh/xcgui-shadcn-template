@@ -1,7 +1,10 @@
 /**
  * 窗口拖动工具 - 通过 JS 调用后端 API 实现窗口拖动.
  * 不依赖 CSS 的 app-region: drag，避免右键弹出系统菜单的问题.
- * 内部使用了 api.moveWindow 来移动窗口, 需在 Go 后端绑定.
+ * 内部使用了以下 API, 需在 Go 后端绑定:
+ *   - api.moveWindow(x, y):          移动窗口
+ *   - api.isMaxWindow():       查询窗口是否最大化
+ *   - api.toggleWindowMaximize():    切换窗口最大化/还原（用于最大化时拖动还原为普通大小）
  */
 
 class WindowDrag {
@@ -80,7 +83,7 @@ class WindowDrag {
       restorePending = false
 
       // 记录按下时窗口是否已最大化, 但先不还原, 等到超过阈值开始拖动时才还原
-      window?.api?.IsMaxWindow().then((maximized) => {
+      window?.api?.isMaxWindow().then((maximized) => {
         if (isDragging && maximized) {
           restorePending = true
         }
