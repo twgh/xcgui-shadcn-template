@@ -50,9 +50,18 @@ export function App() {
     // 通知后端前端已就绪
     bridge.frontendReady()
 
+    // 监听后端上报的窗口最大化/还原状态变化
+    // （双击标题栏或使用系统快捷键最大化时, 前端 JS 无法感知, 由后端 WM_SIZE 事件同步过来）
+    const onWindowMaximizeStateChanged = (maximized: boolean) => {
+      setIsMaximized(maximized)
+    }
+    ;(window as unknown as Record<string, unknown>).__onWindowMaximizeStateChanged =
+      onWindowMaximizeStateChanged
+
     return () => {
       cleanupDrag()
       cleanupResize()
+      delete (window as unknown as Record<string, unknown>).__onWindowMaximizeStateChanged
     }
   }, [])
 

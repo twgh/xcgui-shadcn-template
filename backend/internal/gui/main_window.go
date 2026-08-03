@@ -105,6 +105,29 @@ func (m *MainWindow) setIcon() {
 
 // regXcEvents 注册炫彩事件
 func (m *MainWindow) regXcEvents() {
+	// 窗口消息过程事件：监听窗口最大化/还原状态变化, 同步给前端
+	// （双击标题栏或使用系统快捷键最大化时, 前端 JS 无法感知, 需在此通知）
+	var wasMinimized = false // 窗口是否最小化
+	m.w.AddEvent_WindProc(func(hWindow int, message uint32, wParam, lParam uintptr, pbHandled *bool) int {
+		switch message {
+		case wapi.WM_SIZE:
+			switch wParam {
+			case wapi.SIZE_MINIMIZED: // 窗口最小化
+				wasMinimized = true
+			case wapi.SIZE_MAXIMIZED: // 窗口最大化
+				wasMinimized = false
+				m.wv.Eval(`window.__onWindowMaximizeStateChanged && window.__onWindowMaximizeStateChanged(true)`)
+			case wapi.SIZE_RESTORED: // 窗口被还原（注意：也包括程序启动时的初始显示）
+				if wasMinimized { // 从最小化状态还原
+					wasMinimized = false
+				} else {
+					m.wv.Eval(`window.__onWindowMaximizeStateChanged && window.__onWindowMaximizeStateChanged(false)`)
+				}
+			}
+		}
+		return 0
+	})
+
 	// 窗口关闭事件
 	m.w.AddEvent_Close(func(hWindow int, pbHandled *bool) int {
 		*pbHandled = true // 拦截窗口关闭
