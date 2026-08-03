@@ -6,6 +6,7 @@ declare global {
       // 窗口控制
       minimizeWindow: () => Promise<void>
       toggleWindowMaximize: () => Promise<void>
+      IsMaxWindow: () => Promise<boolean>
       closeWindow: () => Promise<void>
       moveWindow: (x: number, y: number) => Promise<void>
       setWindowSize: (width: number, height: number) => Promise<void>
@@ -42,6 +43,7 @@ async function callApi<T>(method: string, ...args: unknown[]): Promise<T | null>
 export const bridge = {
   minimizeWindow: () => callApi<void>("minimizeWindow"),
   toggleWindowMaximize: () => callApi<void>("toggleWindowMaximize"),
+  IsMaxWindow: () => callApi<boolean>("IsMaxWindow"),
   closeWindow: () => callApi<void>("closeWindow"),
   moveWindow: (x: number, y: number) => callApi<void>("moveWindow", x, y),
   setWindowSize: (width: number, height: number) =>
