@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -27,6 +26,7 @@ type MainWindow struct {
 	origHeight int32    // 窗口原始高度
 	lastPos    xc.POINT // 窗口上一次的位置, -999 代表无效位置
 
+	darkMode bool // 当前深色模式状态（由前端同步）
 }
 
 func NewMainWindow(edg *edge.Edge) *MainWindow {
@@ -103,78 +103,6 @@ func (m *MainWindow) setIcon() {
 	m.tray.Show()
 }
 
-// regXcEvents 注册炫彩事件
-func (m *MainWindow) regXcEvents() {
-	// 窗口消息过程事件：监听窗口最大化/还原状态变化, 同步给前端
-	// （双击标题栏或使用系统快捷键最大化时, 前端 JS 无法感知, 需在此通知）
-	var wasMinimized = false // 窗口是否最小化
-	m.w.AddEvent_WindProc(func(hWindow int, message uint32, wParam, lParam uintptr, pbHandled *bool) int {
-		switch message {
-		case wapi.WM_SIZE:
-			switch wParam {
-			case wapi.SIZE_MINIMIZED: // 窗口最小化
-				wasMinimized = true
-			case wapi.SIZE_MAXIMIZED: // 窗口最大化
-				wasMinimized = false
-				m.wv.Eval(`window.__onWindowMaximizeStateChanged && window.__onWindowMaximizeStateChanged(true)`)
-			case wapi.SIZE_RESTORED: // 窗口被还原（注意：也包括程序启动时的初始显示）
-				if wasMinimized { // 从最小化状态还原
-					wasMinimized = false
-				} else {
-					m.wv.Eval(`window.__onWindowMaximizeStateChanged && window.__onWindowMaximizeStateChanged(false)`)
-				}
-			}
-		}
-		return 0
-	})
-
-	// 窗口关闭事件
-	m.w.AddEvent_Close(func(hWindow int, pbHandled *bool) int {
-		*pbHandled = true // 拦截窗口关闭
-		m.animateToTray() // 缩放+位移动画后隐藏到托盘
-		return 0
-	})
-
-	// 托盘图标事件
-	m.w.AddEvent_TrayIcon(func(wParam, lParam uintptr, pbHandled *bool) int {
-		if int32(wParam) != m.tray.Id { // 不是自定义的托盘图标唯一标识符.
-			return 0
-		}
-		switch xcc.WM_(lParam) {
-		case xcc.WM_LBUTTONDOWN: // 鼠标左键按下
-			m.activateWindow()
-		case xcc.WM_RBUTTONDOWN: // 鼠标右键按下
-			m.showTrayMenu()
-		}
-		return 0
-	})
-}
-
-// frontendReady 前端准备就绪
-func (m *MainWindow) frontendReady() {
-	if firstLoad {
-		firstLoad = false
-		// 一些初始化操作
-	}
-}
-
-var firstLoad = true // 第一次加载前端
-
-// regWebViewEvents 注册 WebView 事件
-func (m *MainWindow) regWebViewEvents() {
-	// 导航完成事件, 这个是在 frontendReady 之前加载完成的
-	m.wv.Event_NavigationCompleted(func(sender *edge.ICoreWebView2, args *edge.ICoreWebView2NavigationCompletedEventArgs) uintptr {
-		uri := sender.MustGetSource()
-		fmt.Println("导航完成:", uri)
-		if uri == m.getHost()+"/index.html" {
-			if firstLoad {
-				m.w.Show()
-			}
-		}
-		return 0
-	})
-}
-
 // bindFunctions 绑定函数
 func (m *MainWindow) bindFunctions() {
 	// ===== 窗口控制 =====
@@ -216,6 +144,12 @@ func (m *MainWindow) bindFunctions() {
 	// 获取版本号
 	m.wv.Bind("api.getVersion", func() string {
 		return g.Version
+	})
+
+	// ===== 主题 =====
+	// 同步深色模式状态（前端主题变化时调用, 用于托盘菜单样式）
+	m.wv.Bind("api.setDarkMode", func(dark bool) {
+		m.darkMode = dark
 	})
 }
 
