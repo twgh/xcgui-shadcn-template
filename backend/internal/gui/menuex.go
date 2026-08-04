@@ -117,6 +117,13 @@ func (mx *MenuEx) bindMenuEvent(hWindowOrhEle int) *MenuEx {
 			Right:  rc.Right + mx.style.ShadowSize,
 			Bottom: rc.Bottom + mx.style.ShadowSize,
 		})
+		// 窗口失去焦点事件
+		w.AddEvent_KillFocus(func(hWindow int, pbHandled *bool) int {
+			if xc.XC_IsHXCGUI(hMenu, xcc.XC_MENU) {
+				xc.XMenu_CloseMenu(hMenu)
+			}
+			return 0
+		})
 		return 0
 	}, false)
 
