@@ -33,7 +33,7 @@ func NewMainWindow(edg *edge.Edge) *MainWindow {
 	m := &MainWindow{
 		edg:        edg,
 		origWidth:  900,
-		origHeight: 700,
+		origHeight: 710,
 		lastPos:    xc.POINT{X: -999, Y: -999},
 	}
 
