@@ -1,11 +1,30 @@
 ## xcgui-shadcn-ui
 
+<a href="https://github.com/twgh/xcgui"><img src="https://img.shields.io/badge/xcgui-1.4.2-blue" alt="xcgui"></a>
+<a href="https://golang.org"> <img src="https://img.shields.io/badge/golang-≥1.18-blue" alt="golang"></a>
+
 基于 Go + XCGUI (WebView2) + React + shadcn/ui 的项目模版, 方便快速开发项目。
 
 ## 技术栈
 
 - **前端**: React 19 + TypeScript + Vite + shadcn/ui (base) + Tailwind CSS v4
 - **后端**: Go + XCGUI (炫彩界面库) + WebView2
+
+## 核心特性
+
+- 窗口圆角/阴影
+- 明暗主题
+- 托盘图标
+- 托盘菜单
+- 窗口缩入托盘动画
+- 前端热重载
+- 前后端通信
+- 单文件发布
+- 自动检测并安装 WebView2 运行时
+
+## 界面展示
+
+![界面展示图](https://s41.ax1x.com/2026/08/04/pmoEkPU.png)
 
 ## 项目结构
 
