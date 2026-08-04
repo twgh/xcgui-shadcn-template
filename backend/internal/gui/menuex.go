@@ -104,12 +104,21 @@ func (mx *MenuEx) bindMenuEvent(hWindowOrhEle int) *MenuEx {
 		xc.XWnd_GetClientRect(pInfo.HWindow, &rc)
 		// 绘制菜单背景
 		xc.XDraw_SetBrushColor(hDraw, mx.style.BackgroundColor)
-		xc.XDraw_FillRect(hDraw, &rc)
+		if mx.style.CornerRadius > 0 {
+			xc.XDraw_FillRoundRect(hDraw, &rc, mx.style.CornerRadius, mx.style.CornerRadius)
+		} else {
+			xc.XDraw_FillRect(hDraw, &rc)
+		}
 		// 绘制菜单边框
 		xc.XDraw_SetBrushColor(hDraw, mx.style.BorderColor)
-		xc.XDraw_DrawRect(hDraw, &rc)
+		if mx.style.CornerRadius > 0 {
+			xc.XDraw_DrawRoundRect(hDraw, &rc, mx.style.CornerRadius, mx.style.CornerRadius)
+		} else {
+			xc.XDraw_DrawRect(hDraw, &rc)
+		}
 		return 0
 	}, false)
+
 	// 菜单项绘制
 	mx.Menu.AddEvent_Menu_DrawItem(hWindowOrhEle, func(hWindowOrhEle, hDraw int, pInfo *xc.Menu_DrawItem_, pbHandled *bool) int {
 		*pbHandled = true
@@ -136,7 +145,11 @@ func (mx *MenuEx) drawItem(hDraw int, pInfo *xc.Menu_DrawItem_) {
 			Bottom: pInfo.RcItem.Bottom - 1,
 		}
 		xc.XDraw_SetBrushColor(hDraw, mx.style.HoverColor)
-		xc.XDraw_FillRect(hDraw, &rc)
+		if mx.style.CornerRadius > 0 {
+			xc.XDraw_FillRoundRect(hDraw, &rc, mx.style.CornerRadius, mx.style.CornerRadius)
+		} else {
+			xc.XDraw_FillRect(hDraw, &rc)
+		}
 	}
 	// 三角形(指向子菜单)
 	if pInfo.NState&xcc.MenuItem_State_Flag_Popup > 0 {
@@ -194,6 +207,10 @@ type Style struct {
 	// 如果你需要统一多个菜单项的宽度, 可在添加项后使用 menu.SetItemWidth(id, w) 单独设置.
 	ItemWidth int32
 
+	// 圆角大小(像素). 0 表示不使用圆角(直角).
+	// 控制菜单背景、菜单边框以及鼠标悬浮时菜单项背景矩形的圆角大小.
+	CornerRadius int32
+
 	// 背景填充色.
 	BackgroundColor uint32
 
@@ -221,6 +238,7 @@ func NewStyle() *Style {
 	return &Style{
 		ItemHeight:        30,
 		ItemWidth:         0,
+		CornerRadius:      8,
 		BackgroundColor:   xc.RGBA(255, 255, 255, 255),
 		BorderColor:       xc.RGBA(218, 220, 224, 255),
 		HoverColor:        xc.RGBA(230, 230, 230, 255),
@@ -235,6 +253,7 @@ func NewStyle() *Style {
 func DarkStyle() *Style {
 	return &Style{
 		ItemHeight:        30,
+		CornerRadius:      8,
 		BackgroundColor:   xc.RGBA(43, 43, 43, 255),
 		BorderColor:       xc.RGBA(70, 70, 70, 255),
 		HoverColor:        xc.RGBA(70, 70, 70, 255),
@@ -254,6 +273,13 @@ func (s *Style) SetItemHeight(h int32) *Style {
 // SetItemWidth 设置菜单项文本区域宽度, 0 表示不设置.
 func (s *Style) SetItemWidth(w int32) *Style {
 	s.ItemWidth = w
+	return s
+}
+
+// SetCornerRadius 设置圆角大小(像素), 0 表示不使用圆角(直角).
+// 会同时影响菜单背景、菜单边框以及鼠标悬浮时菜单项的背景矩形.
+func (s *Style) SetCornerRadius(r int32) *Style {
+	s.CornerRadius = r
 	return s
 }
 
