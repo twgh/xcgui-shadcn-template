@@ -114,10 +114,16 @@ func (m *MainWindow) showTrayMenu(darkMode ...bool) int {
 		return 0
 	}, false) // 这里填 false, 不然每次显示菜单都会加一个回调函数
 
+	// 菜单_置左侧宽度
+	menu.SetLeftWidth(menu.GetLeftWidth() + 10)
+
 	// 一级菜单
 	menu.AddItem(menuItemSetting, "设置", 0, xcc.Menu_Item_Flag_Normal)
+	// 设置菜单宽度
+	menu.SetItemWidth(menuItemSetting, 20)
 
-	menu.AddSeparator() // 分隔栏
+	// 分隔栏
+	menu.AddSeparator()
 
 	menu.AddItem(menuItemExit, "退出", 0, xcc.Menu_Item_Flag_Normal)
 
