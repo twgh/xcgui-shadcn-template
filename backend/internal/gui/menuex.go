@@ -230,18 +230,17 @@ func (mx *MenuEx) drawItem(hDraw int, pInfo *xc.Menu_DrawItem_) {
 //
 // 颜色字段默认值: 文字偏深灰, 背景纯白, 边框淡灰.
 type Style struct {
-	// 整菜单项高度(像素). 0 表示使用菜单内部默认值.
+	// 菜单项高度. 0 表示使用菜单内部默认值.
 	ItemHeight int32
 
-	// 整菜单项文本显示区域宽度(像素), 不含左侧图标区. 0 表示不设置.
-	// 如果你需要统一多个菜单项的宽度, 可在添加项后使用 menu.SetItemWidth(id, w) 单独设置.
+	// 菜单项文本显示区域宽度, 不含左侧图标区. 0 表示不设置.
 	ItemWidth int32
 
-	// 圆角大小(像素). 0 表示不使用圆角(直角).
+	// 圆角大小. 0 表示不使用圆角(直角).
 	// 控制菜单背景、菜单边框以及鼠标悬浮时菜单项背景矩形的圆角大小.
 	CornerRadius int32
 
-	// 阴影大小(像素).
+	// 阴影大小.
 	ShadowSize int32
 
 	// 阴影深度(0-255).
@@ -326,14 +325,14 @@ func (s *Style) SetItemWidth(w int32) *Style {
 	return s
 }
 
-// SetCornerRadius 设置圆角大小(像素), 0 表示不使用圆角(直角).
+// SetCornerRadius 设置圆角大小, 0 表示不使用圆角(直角).
 // 会同时影响菜单背景、菜单边框以及鼠标悬浮时菜单项的背景矩形.
 func (s *Style) SetCornerRadius(r int32) *Style {
 	s.CornerRadius = r
 	return s
 }
 
-// SetShadowSize 设置阴影大小(像素), 同时也是菜单窗口四周为阴影预留的扩展宽度.
+// SetShadowSize 设置阴影大小, 同时也是菜单窗口四周为阴影预留的扩展宽度.
 func (s *Style) SetShadowSize(n int32) *Style {
 	s.ShadowSize = n
 	return s
