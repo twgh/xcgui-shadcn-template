@@ -10,7 +10,7 @@
 
 ## 修改窗口默认尺寸
 
-修改 `NewMainWindow` 函数中的 `origWidth` 和 `origHeight`
+修改 `backend\internal\gui\main_window.go` 里 `NewMainWindow` 函数中的 `origWidth` 和 `origHeight`
 
 ## 绑定 Go 函数到前端调用
 
