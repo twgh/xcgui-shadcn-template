@@ -37,7 +37,7 @@
 │   │   └── components/ui/       # shadcn 组件
 │   └── package.json
 ├── backend/           # Go 后端
-│   ├── 后端开发指南.md
+│   ├── README.md                # 后端开发指南
 │   ├── main.go                  # 程序入口
 │   ├── go.mod
 │   └── winres/                  # 图标, 版本信息, 程序清单
