@@ -233,9 +233,6 @@ type Style struct {
 	// 菜单项高度. 0 表示使用菜单内部默认值.
 	ItemHeight int32
 
-	// 菜单项文本显示区域宽度, 不含左侧图标区. 0 表示不设置.
-	ItemWidth int32
-
 	// 圆角大小. 0 表示不使用圆角(直角).
 	// 控制菜单背景、菜单边框以及鼠标悬浮时菜单项背景矩形的圆角大小.
 	CornerRadius int32
@@ -278,7 +275,6 @@ type Style struct {
 func NewStyle() *Style {
 	return &Style{
 		ItemHeight:        30,
-		ItemWidth:         0,
 		CornerRadius:      8,
 		ShadowSize:        8,
 		ShadowDepth:       80,
@@ -316,12 +312,6 @@ func DarkStyle() *Style {
 // SetItemHeight 设置菜单项高度.
 func (s *Style) SetItemHeight(h int32) *Style {
 	s.ItemHeight = h
-	return s
-}
-
-// SetItemWidth 设置菜单项文本区域宽度, 0 表示不设置.
-func (s *Style) SetItemWidth(w int32) *Style {
-	s.ItemWidth = w
 	return s
 }
 
