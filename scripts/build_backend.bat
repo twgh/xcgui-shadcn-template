@@ -10,10 +10,8 @@ REM 设置输出文件名
 set "output=bin/xcgui-shadcn-ui.exe"
 
 REM 获取当前日期, 设置为版本号 (格式: yyyy.m.d.0)
-for /f "tokens=1,2,3 delims=/ " %%a in ('date /t') do (
-    set /a _y=%%a, _m=%%b, _d=%%c
-)
-set "datestr=%_y%.%_m%.%_d%.0"
+REM 使用 PowerShell 获取日期, 避免不同系统区域设置的 date 输出格式差异
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy.M.d.0'"`) do set "datestr=%%i"
 echo 版本号: %datestr%
 
 REM 将版本号同步写入 winres.json (供 go-winres 生成 exe 版本资源)
