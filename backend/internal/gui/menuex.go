@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/twgh/xcgui/common"
 	"github.com/twgh/xcgui/widget"
+	"github.com/twgh/xcgui/window"
 	"github.com/twgh/xcgui/xc"
 	"github.com/twgh/xcgui/xcc"
 )
@@ -97,6 +98,28 @@ func (mx *MenuEx) AddSeparator(nParentID ...int32) *MenuEx {
 //
 // hWindowOrhEle: 窗口或元素句柄.
 func (mx *MenuEx) bindMenuEvent(hWindowOrhEle int) *MenuEx {
+	// 菜单弹出窗口事件
+	mx.Menu.AddEvent_Menu_Popup_Wnd(hWindowOrhEle, func(hWindowOrhEle, hMenu int, pInfo *xc.Menu_PopupWnd_, pbHandled *bool) int {
+		// pInfo.HWindow 是菜单窗口句柄
+		w := window.NewByHandle(pInfo.HWindow)
+		// 设置窗口为透明窗口阴影类型
+		w.SetTransparentType(xcc.Window_Transparent_Shadow)
+		// 设置窗口阴影信息
+		w.SetShadowInfo(mx.style.ShadowSize, mx.style.ShadowDepth, mx.style.CornerRadius, false, mx.style.ShadowColor)
+		// 设置窗口透明度
+		w.SetTransparentAlpha(mx.style.TransparentAlpha)
+		// 获取窗口矩形
+		rc := w.GetRectEx()
+		// 因为增加了阴影, 所以要调整窗口大小加上阴影宽度
+		w.SetRect(&xc.RECT{
+			Left:   rc.Left - mx.style.ShadowSize,
+			Top:    rc.Top - mx.style.ShadowSize,
+			Right:  rc.Right + mx.style.ShadowSize,
+			Bottom: rc.Bottom + mx.style.ShadowSize,
+		})
+		return 0
+	}, false)
+
 	// 背景绘制
 	mx.Menu.AddEvent_Menu_Draw_Background(hWindowOrhEle, func(hWindowOrhEle, hDraw int, pInfo *xc.Menu_DrawBackground_, pbHandled *bool) int {
 		*pbHandled = true
@@ -211,6 +234,18 @@ type Style struct {
 	// 控制菜单背景、菜单边框以及鼠标悬浮时菜单项背景矩形的圆角大小.
 	CornerRadius int32
 
+	// 阴影大小(像素).
+	ShadowSize int32
+
+	// 阴影深度(0-255).
+	ShadowDepth int32
+
+	// 阴影颜色, xc.RGBA 颜色.
+	ShadowColor uint32
+
+	// 菜单窗口整体透明度(0-255). 255 表示完全不透明.
+	TransparentAlpha byte
+
 	// 背景填充色.
 	BackgroundColor uint32
 
@@ -239,6 +274,10 @@ func NewStyle() *Style {
 		ItemHeight:        30,
 		ItemWidth:         0,
 		CornerRadius:      8,
+		ShadowSize:        8,
+		ShadowDepth:       80,
+		ShadowColor:       xc.RGBA(0, 0, 0, 128),
+		TransparentAlpha:  255,
 		BackgroundColor:   xc.RGBA(255, 255, 255, 255),
 		BorderColor:       xc.RGBA(218, 220, 224, 255),
 		HoverColor:        xc.RGBA(230, 230, 230, 255),
@@ -254,6 +293,10 @@ func DarkStyle() *Style {
 	return &Style{
 		ItemHeight:        30,
 		CornerRadius:      8,
+		ShadowSize:        8,
+		ShadowDepth:       80,
+		ShadowColor:       xc.RGBA(0, 0, 0, 128),
+		TransparentAlpha:  255,
 		BackgroundColor:   xc.RGBA(43, 43, 43, 255),
 		BorderColor:       xc.RGBA(70, 70, 70, 255),
 		HoverColor:        xc.RGBA(70, 70, 70, 255),
@@ -280,6 +323,30 @@ func (s *Style) SetItemWidth(w int32) *Style {
 // 会同时影响菜单背景、菜单边框以及鼠标悬浮时菜单项的背景矩形.
 func (s *Style) SetCornerRadius(r int32) *Style {
 	s.CornerRadius = r
+	return s
+}
+
+// SetShadowSize 设置阴影大小(像素), 同时也是菜单窗口四周为阴影预留的扩展宽度.
+func (s *Style) SetShadowSize(n int32) *Style {
+	s.ShadowSize = n
+	return s
+}
+
+// SetShadowDepth 设置阴影深度(0-255).
+func (s *Style) SetShadowDepth(n int32) *Style {
+	s.ShadowDepth = n
+	return s
+}
+
+// SetShadowColor 设置阴影颜色, xc.RGBA 颜色.
+func (s *Style) SetShadowColor(c uint32) *Style {
+	s.ShadowColor = c
+	return s
+}
+
+// SetTransparentAlpha 设置菜单窗口整体透明度(0-255), 255 表示完全不透明.
+func (s *Style) SetTransparentAlpha(a byte) *Style {
+	s.TransparentAlpha = a
 	return s
 }
 
