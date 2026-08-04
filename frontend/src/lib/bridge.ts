@@ -14,6 +14,8 @@ declare global {
       // 系统
       getVersion: () => Promise<string>
       frontendReady: () => Promise<void>
+      // 主题
+      setDarkMode: (dark: boolean) => Promise<void>
     }
   }
 }
@@ -52,4 +54,5 @@ export const bridge = {
     callApi<{ Left: number; Top: number; Right: number; Bottom: number }>("getWindowRect"),
   getVersion: () => callApi<string>("getVersion"),
   frontendReady: () => callApi<void>("frontendReady"),
+  setDarkMode: (dark: boolean) => callApi<void>("setDarkMode", dark),
 }
