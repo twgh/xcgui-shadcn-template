@@ -30,9 +30,6 @@ func (m *MainWindow) showTrayMenu(darkMode ...bool) int {
 	// 菜单项选择事件
 	menu.AddEvent_Menu_Select(m.w.Handle, m.onMenuSelect, false) // 这里填 false, 不然每次显示菜单都会加一个回调函数
 
-	// 菜单_置左侧宽度
-	menu.SetLeftWidth(menu.GetLeftWidth() + 16)
-
 	// 一级菜单
 	menu.AddItem(menuItemSetting, "设置", 0, xcc.Menu_Item_Flag_Normal)
 
