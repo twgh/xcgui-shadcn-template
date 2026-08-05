@@ -114,7 +114,12 @@ func (m *MainWindow) activateWindow() {
 		m.lastPos.Y = -999
 	}
 
-	m.w.ShowWindow(xcc.SW_SHOWNORMAL)
+	if m.w.IsMaxWindow() {
+		m.w.ShowWindow(xcc.SW_SHOWMAXIMIZED)
+	} else {
+		m.w.ShowWindow(xcc.SW_SHOWNORMAL)
+	}
+	wapi.SetForegroundWindow(m.w.GetHWND())
 }
 
 // hideWindow 隐藏窗口和 WebView
