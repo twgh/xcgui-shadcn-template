@@ -1,7 +1,7 @@
-## xcgui-shadcn-ui
+## xcgui-shadcn-template
 
-<a href="https://github.com/twgh/xcgui"><img src="https://img.shields.io/badge/xcgui-1.4.2-blue" alt="xcgui"></a>
-<a href="https://golang.org"> <img src="https://img.shields.io/badge/golang-≥1.18-blue" alt="golang"></a>
+<p><a href="https://github.com/twgh/xcgui"><img src="https://img.shields.io/badge/xcgui-1.4.2-blue" alt="xcgui"></a>
+<a href="https://golang.org"> <img src="https://img.shields.io/badge/golang-≥1.18-blue" alt="golang"></a></p>
 
 基于 Go + XCGUI (WebView2) + React + shadcn/ui 的项目模版, 方便快速开发项目。
 
