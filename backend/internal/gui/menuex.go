@@ -196,7 +196,7 @@ func (mx *MenuEx) drawItem(hDraw int, pInfo *xc.Menu_DrawItem_) {
 	// 文本
 	leftWidth := xc.XMenu_GetLeftWidth(pInfo.HMenu)
 	rc := pInfo.RcItem
-	rc.Left = leftWidth + 5
+	rc.Left = leftWidth + 7 + mx.style.ShadowSize
 	if pInfo.NState&xcc.MenuItem_State_Flag_Disable > 0 {
 		xc.XDraw_SetBrushColor(hDraw, mx.style.TextDisabledColor)
 	} else {
@@ -219,7 +219,7 @@ func (mx *MenuEx) drawItem(hDraw int, pInfo *xc.Menu_DrawItem_) {
 			if left < 0 {
 				left = 0
 			}
-			xc.XDraw_Image(hDraw, pInfo.HIcon, left, pInfo.RcItem.Top+top)
+			xc.XDraw_Image(hDraw, pInfo.HIcon, left+mx.style.ShadowSize+2, pInfo.RcItem.Top+top)
 		}
 	}
 }
